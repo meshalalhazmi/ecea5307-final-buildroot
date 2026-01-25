@@ -10,7 +10,7 @@ MODIFIED_QEMU_DEFCONFIG=base_external/configs/aesd_qemu_defconfig
 # The place we store customizations for the project current target
 
 # The place we store customizations to the rpi configuration
-MODIFIED_RPI_DEFCONFIG=base_external/configs/aesd_rpi_defconfig
+MODIFIED_RPI_DEFCONFIG=base_external/configs/project_rpi_defconfig
 
 
 # The defconfig from the buildroot directory we use for the project
