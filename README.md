@@ -1,29 +1,27 @@
-# buildroot-rpi
+# buildroot-rpi5
 
-This repository contains assignment starter code for buildroot based assignments for the course Advanced Embedded Software Design, ECEN 5713
+This repository contains a Buildroot-based Linux system targeting the Raspberry Pi 5, developed using the Buildroot external tree workflow.
 
-We will be using rpi3
 
-Configuration of rpi  for Buildroot:
-----------------------------
-Other configuration of rpi:
-----------------------------
-For models A, B, A+ or B+:
+## Target Platform
 
-  $ make raspberrypi_defconfig
+- Board: Raspberry Pi 5
+- Architecture: AArch64 (ARMv8)
+- CPU: Cortex-A76
+- Boot Medium: microSD
+- Boot Flow: Raspberry Pi EEPROM → firmware → Linux kernel
 
-For model Zero (model A+ in smaller form factor):
+## Buildroot Version
 
-  $ make raspberrypi0_defconfig
+Buildroot is included as a Git submodule and pinned to tag **2025.11.1**.
 
-For model 2 B:
+To initialize Buildroot:
 
-  $ make raspberrypi2_defconfig
+```bash
+git submodule update --init --recursive
+```
 
-For model 3 B and B+:
-
-  $ make raspberrypi3_defconfig
-
-For model 4 B:
-
-  $ make raspberrypi4_defconfig
+## helper scripts
+build.sh:Configures and builds the system
+clean.sh : Removes all Buildroot output artifacts and configuration files
+save-config.sh:  Saves the current Buildroot configuration
