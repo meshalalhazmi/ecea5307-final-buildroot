@@ -1,0 +1,18 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+    # Set system time from RTC early in boot.
+    /sbin/hwclock -s -f /dev/rtc0 2>/dev/null || true
+    ;;
+  stop)
+    # Save system time back to RTC on shutdown.
+    /sbin/hwclock -w -f /dev/rtc0 2>/dev/null || true
+    ;;
+  restart)
+    "$0" stop
+    "$0" start
+    ;;
+esac
+
+exit 0
