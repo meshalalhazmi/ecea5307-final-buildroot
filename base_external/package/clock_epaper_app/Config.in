@@ -1,0 +1,5 @@
+config BR2_PACKAGE_CLOCK_EPAPER_APP
+	bool "clock_epaper_app"
+	help
+	  Minimal e-paper clock app that renders the current time once per minute.
+	  Uses the system time (RTC initialized earlier in boot).

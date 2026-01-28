@@ -1,0 +1,25 @@
+#!/bin/sh
+
+DAEMON=/usr/bin/clock_epaper_app
+PIDFILE=/var/run/clock_epaper_app.pid
+
+case "$1" in
+  start)
+    echo "Starting e-paper clock"
+    start-stop-daemon -S -b -m -p "$PIDFILE" --exec "$DAEMON" --
+    ;;
+  stop)
+    echo "Stopping e-paper clock"
+    start-stop-daemon -K -p "$PIDFILE" || true
+    ;;
+  restart)
+    "$0" stop
+    "$0" start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0

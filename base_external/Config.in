@@ -1,2 +1,3 @@
-# Reference (disabled): external package menu entry
-# source "$BR2_EXTERNAL_package_base_PATH/package/aesd-assignments/Config.in"
+menu "External packages"
+	source "$BR2_EXTERNAL_package_base_PATH/package/clock_epaper_app/Config.in"
+endmenu
