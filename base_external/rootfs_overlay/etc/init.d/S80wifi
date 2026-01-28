@@ -18,11 +18,20 @@ case "$1" in
     start-stop-daemon -S -b -m -p ${PIDFILE} --exec ${DAEMON} -- \
       -i ${IFACE} -c ${CONF} -D nl80211
 
-    # Background DHCP retry loop so boot isn't blocked
+    # Background association/DHCP retry loop so boot isn't blocked
     (
       tries=0
       while [ $tries -lt 3 ]; do
-        udhcpc -i ${IFACE} -b -q -t 5 -T 5 >/dev/null 2>&1 && break
+        if ip addr show ${IFACE} | grep -q "inet "; then
+          break
+        fi
+
+        # Restart supplicant in case association failed
+        start-stop-daemon -K -p ${PIDFILE} >/dev/null 2>&1 || true
+        start-stop-daemon -S -b -m -p ${PIDFILE} --exec ${DAEMON} -- \
+          -i ${IFACE} -c ${CONF} -D nl80211
+
+        udhcpc -i ${IFACE} -b -q -t 5 -T 5 >/dev/null 2>&1
         tries=$((tries + 1))
         sleep 5
       done

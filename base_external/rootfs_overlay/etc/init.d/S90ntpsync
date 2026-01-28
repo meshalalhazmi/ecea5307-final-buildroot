@@ -1,0 +1,27 @@
+#!/bin/sh
+
+case "$1" in
+  start)
+    (
+      echo "-------------------------ntpsync: running NTP sync -----------------------" >/dev/console
+
+      if ! ip link show wlan0 >/dev/null 2>&1; then
+        echo "ntpsync: wlan0 not found, exiting... (try to manually rerun : /etc/init.d/S90ntpsync start)" >/dev/console
+        exit 0
+      fi
+      if ! ip addr show wlan0 | grep -q "inet "; then
+        echo "ntpsync: no IP on wlan0 exiting... (try to manually rerun : /etc/init.d/S90ntpsync start)" >/dev/console
+        exit 0
+      fi
+      if ! ping -c 1 -W 2 0.pool.ntp.org >/dev/null 2>&1; then
+        echo "ntpsync: NTP ping failed,  exiting... (try to manually rerun : /etc/init.d/S90ntpsync start)" >/dev/console
+        exit 0
+      fi
+
+      ntpd -qg >/dev/console 2>&1
+      echo ""-------------------------ntpsync: completed  "-------------------------" >/dev/console
+    ) &
+    ;;
+  *)
+    ;;
+esac
