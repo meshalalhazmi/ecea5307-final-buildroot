@@ -1,0 +1,44 @@
+#!/bin/sh
+
+DAEMON=/usr/sbin/wpa_supplicant
+IFACE=wlan0
+CONF=/etc/wpa_supplicant.conf
+PIDFILE=/var/run/wpa_supplicant-${IFACE}.pid
+
+case "$1" in
+  start)
+    modprobe brcmfmac 2>/dev/null || true
+    if [ ! -f "${CONF}" ]; then
+      echo "Wi-Fi config not found: ${CONF}"
+      exit 0
+    fi
+
+    ifconfig ${IFACE} up 2>/dev/null || true
+
+    start-stop-daemon -S -b -m -p ${PIDFILE} --exec ${DAEMON} -- \
+      -i ${IFACE} -c ${CONF} -D nl80211
+
+    # Background DHCP retry loop so boot isn't blocked
+    (
+      tries=0
+      while [ $tries -lt 3 ]; do
+        udhcpc -i ${IFACE} -b -q -t 5 -T 5 >/dev/null 2>&1 && break
+        tries=$((tries + 1))
+        sleep 5
+      done
+    ) &
+    ;;
+  stop)
+    start-stop-daemon -K -p ${PIDFILE} || true
+    ;;
+  restart)
+    "$0" stop
+    "$0" start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac
+
+exit 0
